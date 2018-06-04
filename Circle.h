@@ -12,6 +12,11 @@ public:
 	std::string GetCX() const { return m_cx; }
 	std::string GetCY() const { return m_cy; }
 	std::string GetR() const { return m_r; }
+	std::string GetStroke() const { return m_Stroke; }
+	std::string GetFill() const { return m_Fill; }
+
+	void ChangeCX(std::string change) { m_cx = change; }
+	void ChangeCY(std::string change) { m_cy = change; }
 private:
 	std::string m_cx, m_cy;
 	std::string m_r;
