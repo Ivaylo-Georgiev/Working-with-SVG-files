@@ -53,3 +53,5 @@ void Rect::Print() const
 	std::cout << GetID() << " rect " << m_x << ' ' << m_y << ' ' << m_Height << ' ' << m_Width << ' '<<m_Stroke<<' ' << m_Fill << std::endl;
 }
 
+
+
