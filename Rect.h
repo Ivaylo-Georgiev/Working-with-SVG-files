@@ -13,6 +13,11 @@ public:
 	std::string GetY() const { return m_y; }
 	std::string GetHeight() const { return m_Height; }
 	std::string GetWidth() const { return m_Width; }
+	std::string GetStroke() const { return m_Stroke; }
+	std::string GetFill() const { return m_Fill; }
+
+	void ChangeX(std::string change) { m_x = change; }
+	void ChangeY(std::string change) { m_y = change; }
 private:
 	std::string m_x, m_y;
 	std::string m_Height, m_Width;
