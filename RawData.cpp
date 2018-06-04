@@ -1,6 +1,9 @@
 #include "RawData.h"
 
 #include "Shape.h"
+#include "Line.h"
+#include "Circle.h"
+#include "Rect.h"
 
 #include <iostream>
 #include <fstream>
@@ -125,6 +128,33 @@ int RawData::GetLastShapeIndex() const
 	}
 	return index;
 }
+
+void RawData::ReplaceTag(int line, Shape* shape)
+{
+	if (dynamic_cast<Line*>(shape) != nullptr)
+	{
+		m_RawTags[line] = "<line x1=\"" + dynamic_cast<Line*>(shape)->GetX1() + "\" y1=\"" + 
+			dynamic_cast<Line*>(shape)->GetY1() + "\" x2=\"" + dynamic_cast<Line*>(shape)->GetX2() + 
+			"\" y2=\"" + dynamic_cast<Line*>(shape)->GetY2() + "\" stroke=\"" + 
+			dynamic_cast<Line*>(shape)->GetStroke() + "\" \>";
+	}
+	if (dynamic_cast<Circle*>(shape) != nullptr)
+	{
+		m_RawTags[line] = "<circle cx=\"" + dynamic_cast<Circle*>(shape)->GetCX() + "\" cy=\"" + 
+			dynamic_cast<Circle*>(shape)->GetCY() + "\" r=\"" + dynamic_cast<Circle*>(shape)->GetR() + 
+			"\" stroke=\"" + dynamic_cast<Circle*>(shape)->GetStroke() + "\" fill=\"" + 
+			dynamic_cast<Circle*>(shape)->GetFill() + "\" \>";
+	}
+	if (dynamic_cast<Rect*>(shape) != nullptr)
+	{
+		m_RawTags[line] = "<rect x=\"" + dynamic_cast<Rect*>(shape)->GetX() + "\" y=\"" + 
+			dynamic_cast<Rect*>(shape)->GetY() + "\" height=\"" + dynamic_cast<Rect*>(shape)->GetHeight() +
+			"\" width=\"" + dynamic_cast<Rect*>(shape)->GetWidth() + "\" stroke=\"" + 
+			dynamic_cast<Rect*>(shape)->GetStroke() + "\" fill=\"" + 
+			dynamic_cast<Rect*>(shape)->GetFill() + "\" \>";
+	}
+}
+
 
 void RawData::Print() const
 {
