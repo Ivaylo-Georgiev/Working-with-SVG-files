@@ -13,4 +13,3 @@ Shape::Shape(std::string tag, int line)
 	++ID;
 	m_CorrespondingLine = line;
 }
-
