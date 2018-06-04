@@ -35,7 +35,7 @@ Circle::Circle()
 Circle::Circle(std::string tag, int line)
 	:Shape(tag, line)
 {
-	//snipped borrowed by Antoine, Stack Overflow user 
+	//snippet borrowed by Antoine, Stack Overflow user 
 	//cannonical form for erasing whitespace in a string
 	tag.erase(std::remove(tag.begin(), tag.end(), ' '), tag.end());
 
@@ -50,4 +50,5 @@ void Circle::Print() const
 {
 	std::cout << GetID() << " circle " << m_cx << ' ' << m_cy << ' ' <<m_r<<' '<< m_Stroke << ' ' << m_Fill << std::endl;
 }
+
 
