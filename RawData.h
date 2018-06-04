@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Shape.h"
 
 /*
 	Stores the content of the .svg file line by line.
@@ -20,6 +21,7 @@ public:
 	void AddTag(std::string token);
 	void RemoveTag(int line);
 	int GetLastShapeIndex() const;
+	void ReplaceTag(int line, Shape* shape);
 
 	void Print()const;
 
