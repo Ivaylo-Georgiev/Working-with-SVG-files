@@ -1,3 +1,8 @@
+/*
+	Defines an abstraction of a lab where a shape and it's 
+	corresponding svg tag are manipulated.
+*/
+
 #pragma once
 #include "RawData.h"
 #include "Shape.h"
@@ -8,15 +13,23 @@
 class ShapeLab
 {
 public:
-	//ShapeLab();
-	ShapeLab(const char * adress);
+	//---canonical form---
+	//ShapeLab(); //default state is not well defined
+	//constructor with parameters
+	ShapeLab(std::string adress);
+	//copy constructor
 	ShapeLab(const ShapeLab & rhs);
+	//operator overload
 	ShapeLab& operator=(const ShapeLab & rhs);
+	//destructor
 	~ShapeLab();
 
+	//selecors
 	RawData GetRawData()const { return m_Data; }
 	Shape* GetShape(int ID);
+	int GetShapesNum() const { return m_ShapesNum; }
 
+	//shape-manipulating functions
 	void Print() const;
 	ShapeLab& Create(std::string tagDetails);
 	ShapeLab& Erase(int id);
