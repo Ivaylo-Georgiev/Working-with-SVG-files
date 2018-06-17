@@ -41,7 +41,7 @@ RawData::RawData(std::string adress)
 
 	if (svg.is_open())
 	{
-		std::cout << "File opened successfully. \n";
+		std::cout << "Successfully opened "<<adress<<"\n";
 		//read line by line
 		while (std::getline(svg, line))
 		{
@@ -143,7 +143,7 @@ void RawData::SaveAs(std::string path) const
 			svg << m_RawTags[i] + '\n';
 		//close
 		svg.close();
-		std::cout << "Saved as."<<path<<"\n";
+		std::cout << "Saved as "<<path<<"\n";
 	}
 }
 
@@ -152,6 +152,10 @@ void RawData::AddTag(std::string token)
 {
 	//last shape line index
 	int lastShape = GetLastShapeIndex();
+
+	//handle files without initial shape tags 
+	if (m_Lines>0 && lastShape == 0)
+		lastShape = m_Lines - 2; //the line before <\svg>
 
 	//create buffer 
 	std::string * temp = new std::string[m_Lines + 1];
@@ -167,12 +171,7 @@ void RawData::AddTag(std::string token)
 	//place the new tag at its proper position
 	else
 		temp[lastShape + 1] = token; 
-
-	/*
-	//handle files without initial shape tags 
-	if (m_Lines>0 && lastShape==0)
-		lastShape = m_Lines - 1; //the line before <\svg>
-		*/
+		
 
 	//copy tags following the new tag
 	for (int i = lastShape+1, j = lastShape+2; i < m_Lines; ++i, ++j)
@@ -235,7 +234,7 @@ void RawData::ReplaceTag(int line, Shape* shape)
 		m_RawTags[line] = "<line x1=\"" + dynamic_cast<Line*>(shape)->GetX1() + "\" y1=\"" + 
 			dynamic_cast<Line*>(shape)->GetY1() + "\" x2=\"" + dynamic_cast<Line*>(shape)->GetX2() + 
 			"\" y2=\"" + dynamic_cast<Line*>(shape)->GetY2() + "\" stroke=\"" + 
-			dynamic_cast<Line*>(shape)->GetStroke() + "\" \>";
+			dynamic_cast<Line*>(shape)->GetStroke() + "\" />";
 	}
 
 	//circle
@@ -245,7 +244,7 @@ void RawData::ReplaceTag(int line, Shape* shape)
 		m_RawTags[line] = "<circle cx=\"" + dynamic_cast<Circle*>(shape)->GetCX() + "\" cy=\"" + 
 			dynamic_cast<Circle*>(shape)->GetCY() + "\" r=\"" + dynamic_cast<Circle*>(shape)->GetR() + 
 			"\" stroke=\"" + dynamic_cast<Circle*>(shape)->GetStroke() + "\" fill=\"" + 
-			dynamic_cast<Circle*>(shape)->GetFill() + "\" \>";
+			dynamic_cast<Circle*>(shape)->GetFill() + "\" />";
 	}
 
 	//rect
@@ -256,7 +255,7 @@ void RawData::ReplaceTag(int line, Shape* shape)
 			dynamic_cast<Rect*>(shape)->GetY() + "\" height=\"" + dynamic_cast<Rect*>(shape)->GetHeight() +
 			"\" width=\"" + dynamic_cast<Rect*>(shape)->GetWidth() + "\" stroke=\"" + 
 			dynamic_cast<Rect*>(shape)->GetStroke() + "\" fill=\"" + 
-			dynamic_cast<Rect*>(shape)->GetFill() + "\" \>";
+			dynamic_cast<Rect*>(shape)->GetFill() + "\" />";
 	}
 }
 
