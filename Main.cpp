@@ -10,12 +10,12 @@
 
 void ToggleMenu(ShapeLab* shl)
 {
-	std::regex R_LINE("line [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [a-z]+");
+	std::regex R_LINE("line [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ ([a-z]+)?");
 	std::regex R_CIRCLE("circle [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [a-z]+ [a-z]+");
 	std::regex R_RECT("rect [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [[:digit:]]+ [a-z]+ [a-z]+");
 	std::regex R_ID("[[:digit:]]+");
 
-	std::regex R_TRANS("translate \([[:digit:]]+ )?vertical=[[:digit:]]+ horizontal=[[:digit:]]+");
+	std::regex R_TRANS("translate \([[:digit:]]+ )?vertical=(-)?[[:digit:]]+ horizontal=(-)?[[:digit:]]+");
 
 	std::cout << "Command: ";
 	std::string command;
@@ -23,8 +23,13 @@ void ToggleMenu(ShapeLab* shl)
 
 	if (command.find("open ") == 0)
 	{
-		delete shl;
-		shl = new ShapeLab(command.substr(command.find_first_of(' ') + 1));
+		if (command.find(".svg") == command.length() - 4) //".svg".length()=4
+		{
+			delete shl;
+			shl = new ShapeLab(command.substr(command.find_first_of(' ') + 1));
+		}
+		else
+			std::cout << "Invalid file type.\n";
 	}
 	else if (command == "close" && shl)
 	{
@@ -46,6 +51,7 @@ void ToggleMenu(ShapeLab* shl)
 	else if (command == "print" && shl)
 	{
 		shl->Print();
+		std::cout << "Command complete.\n";
 	}
 	else if (command.find("create ") == 0 && shl &&
 		(std::regex_match(command.substr(command.find_first_of(' ') + 1), R_LINE) ||
@@ -53,18 +59,15 @@ void ToggleMenu(ShapeLab* shl)
 			std::regex_match(command.substr(command.find_first_of(' ') + 1), R_RECT)))
 	{
 		shl->Create(command.substr(command.find_first_of(' ') + 1));
-		std::cout << "Shape created successfully.\n";
 	}
 	else if (command.find("erase ") == 0 && shl &&
 		std::regex_match(command.substr(command.find_first_of(' ') + 1), R_ID))
 	{
 		shl->Erase(stoi(command.substr(command.find_first_of(' ') + 1)));
-		std::cout << "Command complete.\n";
 	}
 	else if (std::regex_match(command, R_TRANS) && shl)
 	{
 		shl->Translate(command.substr(command.find_first_of(' ') + 1));
-		std::cout << "Translation complete.\n";
 	}
 	else if (command.find("within ") == 0 && shl &&
 		(std::regex_match(command.substr(command.find_first_of(' ') + 1), R_LINE) ||
