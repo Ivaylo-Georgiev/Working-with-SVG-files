@@ -147,16 +147,26 @@ ShapeLab& ShapeLab::Create(std::string tagDetails)
 
 	//create a new line
 	if (newTag.find("<line") != std::string::npos)
+	{
 		buffer[m_ShapesNum - 1] = new Line(newTag, index);
+		std::cout << "Successfully created line (" << buffer[m_ShapesNum - 1]->GetID() << ")\n";
+	}
 	//create a new circle
 	if (newTag.find("<circle") != std::string::npos)
+	{
 		buffer[m_ShapesNum - 1] = new Circle(newTag, index);
+		std::cout << "Successfully created circle (" << buffer[m_ShapesNum - 1]->GetID() << ")\n";
+	}
 	//create a new rect
 	if (newTag.find("<rect") != std::string::npos)
+	{
 		buffer[m_ShapesNum - 1] = new Rect(newTag, index);
+		std::cout << "Successfully created rect (" << buffer[m_ShapesNum - 1]->GetID() << ")\n";
+	}
 
 	//m_Shapes now points to buffer
 	m_Shapes = buffer;
+
 
 	return *this;
 }
@@ -192,6 +202,7 @@ ShapeLab& ShapeLab::Erase(int id)
 			m_Data.RemoveTag(m_Shapes[i]->GetCorrespondingLine());
 			//free memory for the shape to be erased
 			delete m_Shapes[i];
+			std::cout << "Successfully erased shape " << id << std::endl;
 			for (int j = i; j < m_ShapesNum; ++j)
 			{
 				//change corresponding lines in raw data for each shape forward
@@ -245,6 +256,7 @@ ShapeLab& ShapeLab::Translate(std::string info)
 			//update raw data
 			m_Data.ReplaceTag(m_Shapes[i]->GetCorrespondingLine(), m_Shapes[i]);
 		}
+		std::cout << "Translated all shapes.\n";
 	}
 	//translate by ID
 	else
@@ -264,6 +276,8 @@ ShapeLab& ShapeLab::Translate(std::string info)
 				Trans(m_Shapes[i], vertical, horizontal);
 				//update raw data
 				m_Data.ReplaceTag(m_Shapes[i]->GetCorrespondingLine(), m_Shapes[i]);
+
+				std::cout << "Translated " << m_Shapes[i]->GetID() << ".\n";
 				break;
 			}
 		}
@@ -271,7 +285,7 @@ ShapeLab& ShapeLab::Translate(std::string info)
 		//display proper message if a shape with that ID is not found
 		if (!found)
 		{
-			std::cout << "Shape not found\n";
+			std::cout << "Shape not found. \n";
 		}
 	}
 	return *this;
@@ -280,6 +294,9 @@ ShapeLab& ShapeLab::Translate(std::string info)
 //print all shapes completely inside a given shape
 void ShapeLab::Within(std::string info) const
 {
+	//flag if there are any shapes within
+	bool within = false;
+
 	//circle
 	if (info.find("circle") == 0)
 	{
@@ -301,6 +318,7 @@ void ShapeLab::Within(std::string info) const
 				if (pow(stoi(dynamic_cast<Line*>(m_Shapes[i])->GetX1()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Line*>(m_Shapes[i])->GetY1()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2) &&
 					pow(stoi(dynamic_cast<Line*>(m_Shapes[i])->GetX2()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Line*>(m_Shapes[i])->GetY2()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
@@ -314,6 +332,7 @@ void ShapeLab::Within(std::string info) const
 					pow(stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCX()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCY()) + stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetR()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2) &&
 					pow(stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCX()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCY()) - stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetR()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
@@ -327,6 +346,7 @@ void ShapeLab::Within(std::string info) const
 					pow(stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetX()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetY()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2) &&
 					pow(stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetX()) - stoi(temp->GetCX()), 2) + pow(stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetY()) + stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetHeight()) - stoi(temp->GetCY()), 2) <= pow(stoi(temp->GetR()), 2))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
@@ -355,6 +375,7 @@ void ShapeLab::Within(std::string info) const
 					stoi(dynamic_cast<Line*>(m_Shapes[i])->GetY2()) >= stoi(temp->GetY()) &&
 					stoi(dynamic_cast<Line*>(m_Shapes[i])->GetY2()) <= stoi(temp->GetY()) + stoi(temp->GetHeight()))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
@@ -368,6 +389,7 @@ void ShapeLab::Within(std::string info) const
 					stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCY()) + stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetR()) <= stoi(temp->GetY()) + stoi(temp->GetHeight()) &&
 					stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetCY()) - stoi(dynamic_cast<Circle*>(m_Shapes[i])->GetR()) >= stoi(temp->GetY()))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
@@ -382,12 +404,16 @@ void ShapeLab::Within(std::string info) const
 					stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetX()) + stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetWidth()) <= stoi(temp->GetX()) + stoi(temp->GetWidth()) &&
 					stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetY()) + stoi(dynamic_cast<Rect*>(m_Shapes[i])->GetHeight()) <= stoi(temp->GetY()) + stoi(temp->GetHeight()))
 				{
+					within = true;
 					m_Shapes[i]->Print();
 				}
 			}
 		}
 		//free memory
 		delete temp;
+
+		if (!within)
+			std::cout << "No shapes are located within " << info << std::endl;
 	}
 	else
 		std::cout << "Shape not supported. \n";
